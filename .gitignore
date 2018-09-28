@@ -63,3 +63,6 @@ typings/
 # ide temp file
 .idea/
 *.iml
+
+# typescript compiled file
+dist/

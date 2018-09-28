@@ -1,0 +1,25 @@
+{
+  "name": "tinyblockchain",
+  "version": "0.0.1",
+  "description": "tiny block chain write by node.js",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leoliew/TinyBlockChain.git"
+  },
+  "keywords": [
+    "blockchain"
+  ],
+  "author": "leo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leoliew/TinyBlockChain/issues"
+  },
+  "homepage": "https://github.com/leoliew/TinyBlockChain#readme",
+  "devDependencies": {
+    "@types/node": "^10.11.2"
+  }
+}
