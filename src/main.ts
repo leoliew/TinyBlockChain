@@ -6,16 +6,21 @@ interface IBlock {
   data: string
   previousHash: string
   hash: string
+  nonce: number
 
   calculateHash? (): string
+
+  mineBlock? (difficulty:number): void
 }
 
-class Block implements IBlock{
-   index: number
-   timestamp: number
-   data: string
-   previousHash: string
-   hash: string
+class Block implements IBlock {
+  index: number
+  timestamp: number
+  data: string
+  previousHash: string
+  hash: string
+  nonce: number
+
 
   constructor (index: number, timestamp: number, data: string, previousHash: string) {
     this.index = index
@@ -23,19 +28,31 @@ class Block implements IBlock{
     this.data = data
     this.previousHash = previousHash
     this.hash = this.calculateHash()
+    this.nonce = 0
   }
 
   calculateHash () {
 
-    return Bcrypt.SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data))
+    return Bcrypt.SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString()
+  }
+
+
+  mineBlock (difficulty:number) {
+    while (this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")) {
+      this.nonce++
+      this.hash = this.calculateHash()
+    }
+    console.log("BLOCK MINED: " + this.hash)
   }
 }
 
 class BlockChain {
   chain: Array<IBlock>
+  difficulty: number
 
   constructor () {
     this.chain = [this.createGenesisBlock()]
+    this.difficulty = 1
   }
 
   createGenesisBlock () {
@@ -48,6 +65,7 @@ class BlockChain {
 
   addBlock (newBlock: IBlock) {
     newBlock.previousHash = this.getLatestBlock().hash
+    newBlock.mineBlock(this.difficulty)
     newBlock.hash = newBlock.calculateHash()
     this.chain.push(newBlock)
   }
