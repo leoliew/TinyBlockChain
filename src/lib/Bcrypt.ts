@@ -6,6 +6,6 @@ export class Bcrypt {
    * sha256
    */
   static SHA256 (originData: string): string {
-    return crypto.createHash('sha256').update(originData).digest('base64')
+    return crypto.createHash('sha256').update(originData).digest('hex')
   }
 }
