@@ -1,7 +1,9 @@
 import { Bcrypt } from './lib/Bcrypt'
+import { ec as EC } from 'elliptic'
+
+const ec = new EC('secp256k1')
 
 interface IBlock {
-  // index: number
   timestamp: number
   transactions: any
   previousHash: string
@@ -11,6 +13,8 @@ interface IBlock {
   calculateHash? (): string
 
   mineBlock? (difficulty: number): void
+
+  hasValidTransactions? (): boolean
 }
 
 
@@ -18,16 +22,40 @@ class Transaction {
   fromAddress: string
   toAddress: string
   amount: number
+  signature: string
 
   constructor (fromAddress: string, toAddress: string, amount: number) {
     this.fromAddress = fromAddress
     this.toAddress = toAddress
     this.amount = amount
   }
+
+  calculateHash () {
+    return Bcrypt.SHA256(this.fromAddress + this.toAddress + this.amount).toString()
+  }
+
+  signTransaction (signingKey: any) {
+    if (signingKey.getPublic('hex') !== this.fromAddress) {
+      throw new Error('You cannot sign transactions for other wallets!')
+    }
+    const hashTx = this.calculateHash()
+    const sig = signingKey.sign(hashTx, 'base64')
+    this.signature = sig.toDER('hex')
+  }
+
+  isValid () {
+    if (this.fromAddress === null) {
+      return true
+    }
+    if (!this.signature || this.signature.length === 0) {
+      throw new Error('No signature in this transaction')
+    }
+    const publicKey = ec.keyFromPublic(this.fromAddress, 'hex')
+    return publicKey.verify(this.calculateHash(), this.signature)
+  }
 }
 
 class Block implements IBlock {
-  // index: number
   timestamp: number
   transactions: any
   previousHash: string
@@ -54,6 +82,15 @@ class Block implements IBlock {
       this.hash = this.calculateHash()
     }
     console.log("BLOCK MINED: " + this.hash)
+  }
+
+  hasValidTransactions () {
+    for (const tx of this.transactions) {
+      if (!tx.isValid()) {
+        return false
+      }
+    }
+    return true
   }
 }
 
@@ -86,7 +123,7 @@ class BlockChain {
   // }
 
   minePendingTransactions (miningRewardAddress: string) {
-    let block = new Block(Date.now(), this.pendingTransactions)
+    let block = new Block(Date.now(), this.pendingTransactions, this.getLatestBlock().hash)
     block.mineBlock(this.difficulty)
 
     console.log('Block successfully mined!')
@@ -98,7 +135,13 @@ class BlockChain {
 
   }
 
-  createTransaction (transaction: Transaction) {
+  addTransaction (transaction: Transaction) {
+    if (!transaction.fromAddress || !transaction.toAddress) {
+      throw new Error('Transaction must include from and to address')
+    }
+    if (!transaction.isValid()) {
+      throw new Error('Cannot add invalid transaction to chain')
+    }
     this.pendingTransactions.push(transaction)
   }
 
@@ -126,6 +169,9 @@ class BlockChain {
         return false
       }
       if (currentBlock.previousHash !== previousBlock.hash) {
+        return false
+      }
+      if (!currentBlock.hasValidTransactions()) {
         return false
       }
     }
