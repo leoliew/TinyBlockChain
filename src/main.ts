@@ -3,7 +3,7 @@ import { Bcrypt } from './lib/Bcrypt'
 interface IBlock {
   // index: number
   timestamp: number
-  transactions: string
+  transactions: any
   previousHash: string
   hash: string
   nonce: number
@@ -29,14 +29,13 @@ class Transaction {
 class Block implements IBlock {
   // index: number
   timestamp: number
-  transactions: string
+  transactions: any
   previousHash: string
   hash: string
   nonce: number
 
 
-  constructor (timestamp: number, transactions: string, previousHash: string) {
-    // this.index = index
+  constructor (timestamp: number, transactions: any, previousHash = '') {
     this.timestamp = timestamp
     this.transactions = transactions
     this.previousHash = previousHash
@@ -45,8 +44,7 @@ class Block implements IBlock {
   }
 
   calculateHash () {
-
-    return Bcrypt.SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString()
+    return Bcrypt.SHA256(this.previousHash + this.timestamp + JSON.stringify(this.transactions) + this.nonce).toString()
   }
 
 
@@ -61,14 +59,14 @@ class Block implements IBlock {
 
 class BlockChain {
   chain: Array<IBlock>
-  pendingTransactions: Array<Transaction>
   difficulty: number
+  pendingTransactions: Array<Transaction>
   miningReward: number
 
   constructor () {
     this.chain = [this.createGenesisBlock()]
     this.difficulty = 1
-    this.pendingTransactions  = []
+    this.pendingTransactions = []
     this.miningReward = 100
   }
 
@@ -80,11 +78,44 @@ class BlockChain {
     return this.chain[this.chain.length - 1]
   }
 
-  addBlock (newBlock: IBlock) {
-    newBlock.previousHash = this.getLatestBlock().hash
-    newBlock.mineBlock(this.difficulty)
-    newBlock.hash = newBlock.calculateHash()
-    this.chain.push(newBlock)
+  // addBlock (newBlock: IBlock) {
+  //   newBlock.previousHash = this.getLatestBlock().hash
+  //   newBlock.mineBlock(this.difficulty)
+  //   newBlock.hash = newBlock.calculateHash()
+  //   this.chain.push(newBlock)
+  // }
+
+  minePendingTransactions (miningRewardAddress: string) {
+    let block = new Block(Date.now(), this.pendingTransactions)
+    block.mineBlock(this.difficulty)
+
+    console.log('Block successfully mined!')
+    this.chain.push(block)
+
+    this.pendingTransactions = [
+      new Transaction(null, miningRewardAddress, this.miningReward)
+    ]
+
+  }
+
+  createTransaction (transaction: Transaction) {
+    this.pendingTransactions.push(transaction)
+  }
+
+
+  getBalanceOfAddress (address: string) {
+    let balance = 0
+    for (const block of this.chain) {
+      for (const trans of block.transactions) {
+        if (trans.fromAddress === address) {
+          balance -= trans.amount
+        }
+        if (trans.toAddress === address) {
+          balance += trans.amount
+        }
+      }
+    }
+    return balance
   }
 
   isChainValid () {
@@ -105,5 +136,6 @@ class BlockChain {
 
 export {
   Block,
-  BlockChain
+  BlockChain,
+  Transaction
 }
