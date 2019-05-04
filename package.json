@@ -2,7 +2,7 @@
   "name": "tinyblockchain",
   "version": "0.0.1",
   "description": "tiny block chain write by node.js",
-  "main": "main.js",
+  "main": "dist/main.js",
   "scripts": {
     "test": "jest"
   },
