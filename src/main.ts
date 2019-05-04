@@ -1,92 +1,54 @@
-import { Bcrypt } from './lib/Bcrypt'
+// import { Block, BlockChain } from "./main"
+import { Transaction } from "./Transaction"
+import { BlockChain } from "./BlockChain"
+import { ec as EC } from 'elliptic'
 
-interface IBlock {
-  index: number
-  timestamp: number
-  data: string
-  previousHash: string
-  hash: string
-  nonce: number
+const ec = new EC('secp256k1')
 
-  calculateHash? (): string
-
-  mineBlock? (difficulty:number): void
-}
-
-class Block implements IBlock {
-  index: number
-  timestamp: number
-  data: string
-  previousHash: string
-  hash: string
-  nonce: number
+// test('block chain', () => {
+// Create new instance of Blockchain class
+let blockChain = new BlockChain()
 
 
-  constructor (index: number, timestamp: number, data: string, previousHash: string) {
-    this.index = index
-    this.timestamp = timestamp
-    this.data = data
-    this.previousHash = previousHash
-    this.hash = this.calculateHash()
-    this.nonce = 0
-  }
-
-  calculateHash () {
-
-    return Bcrypt.SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString()
-  }
+// Create key object
+const myKey = ec.keyFromPrivate('afbdbdc791d467b34609f8022bde97a6dbbf650b086e4bf4ad745b9fcfb640f6')
+const myWalletAddress = myKey.getPublic('hex')
 
 
-  mineBlock (difficulty:number) {
-    while (this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")) {
-      this.nonce++
-      this.hash = this.calculateHash()
-    }
-    console.log("BLOCK MINED: " + this.hash)
-  }
-}
+// Create key object
+const myKey1 = ec.keyFromPrivate('7376f678f6efc34e607af9711aa689cbdbb42ff24686a682d55716698fb63f9c')
+const myWalletAddress1 = myKey1.getPublic('hex')
 
-class BlockChain {
-  chain: Array<IBlock>
-  difficulty: number
+// Make a transaction
+const tx1 = new Transaction(myWalletAddress, myWalletAddress1, 10)
+tx1.signTransaction(myKey)
+blockChain.addTransaction(tx1)
 
-  constructor () {
-    this.chain = [this.createGenesisBlock()]
-    this.difficulty = 1
-  }
+// Mine block
+blockChain.minePendingTransactions(myWalletAddress)
 
-  createGenesisBlock () {
-    return new Block(0, new Date().getTime(), "Genesis block", "0")
-  }
 
-  getLatestBlock () {
-    return this.chain[this.chain.length - 1]
-  }
+// console.log('Balance of myWallet is', blockChain.getBalanceOfAddress(myWalletAddress)); // 0
 
-  addBlock (newBlock: IBlock) {
-    newBlock.previousHash = this.getLatestBlock().hash
-    newBlock.mineBlock(this.difficulty)
-    newBlock.hash = newBlock.calculateHash()
-    this.chain.push(newBlock)
-  }
+// 尝试修改区块
+// blockChain.chain[1].data = JSON.stringify({amount: 100})
 
-  isChainValid () {
-    for (let i = 1; i < this.chain.length; i++) {
-      const currentBlock = this.chain[i]
-      const previousBlock = this.chain[i - 1]
-      if (currentBlock.hash !== currentBlock.calculateHash()) {
-        return false
-      }
-      if (currentBlock.previousHash !== previousBlock.hash) {
-        return false
-      }
-    }
-    return true
-  }
+// console.log('Starting the miner...')
 
-}
+// blockChain.minePendingTransactions('address3')
 
-export {
-  Block,
-  BlockChain
-}
+
+// console.log('Balance of address3 is',blockChain.getBalanceOfAddress('address3'))
+
+
+console.log('Starting the miner again...')
+
+blockChain.minePendingTransactions(myWalletAddress)
+
+// console.log('Balance of address1 is',blockChain.getBalanceOfAddress('address2'))
+// console.log('Balance of address2 is',blockChain.getBalanceOfAddress('address2'))
+// console.log('Balance of address3 is',blockChain.getBalanceOfAddress('address3'))
+console.log('Balance of myWallet is', blockChain.getBalanceOfAddress(myWalletAddress)) // 90
+
+// expect(blockChain.isChainValid()).toEqual(true)
+// })
