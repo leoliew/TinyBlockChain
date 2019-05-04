@@ -1,4 +1,5 @@
-import { Block, BlockChain,Transaction } from "./main"
+// import { Block, BlockChain } from "./main"
+import {Transaction,BlockChain} from "./lib"
 import {ec as EC} from 'elliptic'
 const ec = new EC('secp256k1');
 
