@@ -15,4 +15,5 @@
 
 ## 设计
 
-...
+![design image](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/leoliew/TinyBlockChain/dev/document/design.puml)
+
