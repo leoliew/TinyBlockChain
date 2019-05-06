@@ -2,16 +2,14 @@ import { Block } from "./Block"
 import { Transaction } from "./Transaction"
 
 export class BlockChain {
-  chain: Array<Block>
-  difficulty: number
-  pendingTransactions: Transaction[]
-  miningReward: number
+  public chain: Array<Block>
+  private pendingTransactions: Transaction[]
+  private readonly difficulty = 1
+  private readonly miningReward = 100
 
   constructor () {
     this.chain = [this.createGenesisBlock()]
-    this.difficulty = 1
     this.pendingTransactions = []
-    this.miningReward = 100
   }
 
   /**
