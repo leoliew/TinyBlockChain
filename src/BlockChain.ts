@@ -2,16 +2,14 @@ import { Block } from "./Block"
 import { Transaction } from "./Transaction"
 
 export class BlockChain {
-  chain: Array<Block>
-  difficulty: number
-  pendingTransactions: Transaction[]
-  miningReward: number
+  public chain: Array<Block>
+  private pendingTransactions: Transaction[]
+  private readonly difficulty = 1
+  private readonly miningReward = 100
 
   constructor () {
     this.chain = [this.createGenesisBlock()]
-    this.difficulty = 1
     this.pendingTransactions = []
-    this.miningReward = 100
   }
 
   /**
@@ -40,13 +38,15 @@ export class BlockChain {
    * @param {string} miningRewardAddress
    */
   minePendingTransactions (miningRewardAddress: string) {
+    const rewardTx = new Transaction(null, miningRewardAddress, this.miningReward)
+    this.pendingTransactions.push(rewardTx)
+
     let block = new Block(Date.now(), this.pendingTransactions, this.getLatestBlock().hash)
     block.mineBlock(this.difficulty)
+
     console.log('Block successfully mined!')
     this.chain.push(block)
-    this.pendingTransactions = [
-      new Transaction(null, miningRewardAddress, this.miningReward)
-    ]
+    this.pendingTransactions = []
   }
 
   /**

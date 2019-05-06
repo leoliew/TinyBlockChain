@@ -28,7 +28,7 @@ blockChain.addTransaction(tx1)
 blockChain.minePendingTransactions(myWalletAddress)
 
 
-// console.log('Balance of myWallet is', blockChain.getBalanceOfAddress(myWalletAddress)); // 0
+console.log('Balance of myWallet is', blockChain.getBalanceOfAddress(myWalletAddress)); // 0
 
 // 尝试修改区块
 // blockChain.chain[1].data = JSON.stringify({amount: 100})
@@ -41,14 +41,14 @@ blockChain.minePendingTransactions(myWalletAddress)
 // console.log('Balance of address3 is',blockChain.getBalanceOfAddress('address3'))
 
 
-console.log('Starting the miner again...')
+// console.log('Starting the miner again...')
 
-blockChain.minePendingTransactions(myWalletAddress)
+// blockChain.minePendingTransactions(myWalletAddress)
 
 // console.log('Balance of address1 is',blockChain.getBalanceOfAddress('address2'))
 // console.log('Balance of address2 is',blockChain.getBalanceOfAddress('address2'))
 // console.log('Balance of address3 is',blockChain.getBalanceOfAddress('address3'))
-console.log('Balance of myWallet is', blockChain.getBalanceOfAddress(myWalletAddress)) // 90
+// console.log('Balance of myWallet is', blockChain.getBalanceOfAddress(myWalletAddress)) // 90
 
 // expect(blockChain.isChainValid()).toEqual(true)
 // })

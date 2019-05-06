@@ -4,10 +4,10 @@ import { ec as EC } from 'elliptic'
 const ec = new EC('secp256k1')
 
 export class Transaction {
-  fromAddress: string
-  toAddress: string
-  amount: number
-  signature: string
+  public fromAddress: string
+  public toAddress: string
+  public amount: number
+  private signature: string
 
   /**
    * @param fromAddress

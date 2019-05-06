@@ -1,0 +1,46 @@
+@startuml
+class Transaction {
+.. Field ..
+  +fromAddress: String
+  +toAddress: String
+  +amount: Number
+  -signature: String
+.. Method ..
+  +calculateHash
+  +signTransaction
+  +isValid
+}
+
+class Block {
+.. Field ..
+   -timestamp : Date
+   +transactions : Array<Transaction>
+   +previousHash: String
+   +hash: String
+   -nonce: Number
+.. Method ..
+  +calculateHash
+  +mineBlock
+  +hasValidTransactions
+}
+
+class BlockChain {
+.. Field ..
+  +chain : Array<Block>
+  -pendingTransactions: Transaction[]
+  -difficulty: Number
+  -miningReward: Number
+.. Method ..
+  +createGenesisBlock
+  +getLatestBlock
+  +minePendingTransactions
+  +addTransaction
+  +getBalanceOfAddress
+  +getAllTransactionsForWallet
+  +isChainValid
+}
+
+Block "0..1" *-- "*" Transaction
+BlockChain "1" *-- "*" Transaction
+BlockChain "1" *-- "*" Block
+@enduml

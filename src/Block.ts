@@ -2,11 +2,11 @@ import { Bcrypt } from "./util/Bcrypt"
 import { Transaction } from "./Transaction"
 
 export class Block {
-  timestamp: number
-  transactions: any
-  previousHash: string
-  hash: string
-  nonce: number
+  private timestamp: number
+  public transactions: Array<Transaction>
+  public previousHash: string
+  public hash: string
+  private nonce: number
 
   /**
    * @param timestamp
