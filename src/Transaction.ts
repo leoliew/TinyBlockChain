@@ -1,4 +1,4 @@
-import { Bcrypt } from "./util/Bcrypt"
+import { Bcrypt } from './util/Bcrypt'
 import { ec as EC } from 'elliptic'
 
 const ec = new EC('secp256k1')
@@ -25,7 +25,7 @@ export class Transaction {
    *
    * @returns {string}
    */
-  calculateHash () {
+  calculateHash ():string {
     return Bcrypt.SHA256(this.fromAddress + this.toAddress + this.amount).toString()
   }
 
@@ -50,12 +50,11 @@ export class Transaction {
   }
 
   /**
-   * Checks if the signature is valid (transaction has not been tampered with).
-   * It uses the fromAddress as the public key.
-   *
+   * 重点:验证交易签名是否有效（交易签名是否被篡改）
+   * 使用 fromAddress 作为公钥验证
    * @returns {boolean}
    */
-  isValid () {
+  isValid (): boolean {
     if (this.fromAddress === null) {
       return true
     }
