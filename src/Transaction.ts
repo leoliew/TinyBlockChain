@@ -7,6 +7,7 @@ export class Transaction {
   public fromAddress: string
   public toAddress: string
   public amount: number
+  public timestamp: number
   private signature: string
 
   /**
@@ -18,23 +19,22 @@ export class Transaction {
     this.fromAddress = fromAddress
     this.toAddress = toAddress
     this.amount = amount
+    this.timestamp = Date.now()
   }
 
   /**
    * Creates a SHA256 hash of the transaction
-   *
    * @returns {string}
    */
-  calculateHash ():string {
-    return Bcrypt.SHA256(this.fromAddress + this.toAddress + this.amount).toString()
+  calculateHash (): string {
+    return Bcrypt.SHA256(this.fromAddress + this.toAddress + this.amount + this.timestamp).toString()
   }
 
   /**
-   * Signs a transaction with the given signingKey (which is an Elliptic keypair
-   * object that contains a private key). The signature is then stored inside the
-   * transaction object and later stored on the blockchain.
-   *
-   * @param {string} signingKey
+   * 1.使用区块链私钥签署交易
+   * 2.将签名存储在交易对象上
+   * 3.将交易对象存储在区块链上（记账后产生）
+   * @param signingKey
    */
   signTransaction (signingKey: any) {
     // You can only send a transaction from the wallet that is linked to your
