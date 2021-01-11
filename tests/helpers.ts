@@ -1,36 +1,35 @@
-const { Transaction } = require('../src/Transaction')
-const { Blockchain } = require('../src/BlockChain')
-const EC = require('elliptic').ec;
-const ec = new EC('secp256k1');
-const signingKey = ec.keyFromPrivate('3d6f54430830d388052865b95c10b4aeb1bbe33c01334cf2cfa8b520062a0ce3');
+const {Transaction} = require('../src/Transaction')
+const {Blockchain} = require('../src/BlockChain')
+const EC = require('elliptic').ec
+const ec = new EC('secp256k1')
+const signingKey = ec.keyFromPrivate('3d6f54430830d388052865b95c10b4aeb1bbe33c01334cf2cfa8b520062a0ce3')
 
-function createSignedTx(amount = 10) {
-  const txObject = new Transaction(signingKey.getPublic('hex'), 'wallet2', amount);
-  txObject.timestamp = 1;
-  txObject.signTransaction(signingKey);
-
-  return txObject;
+/**
+ * 创建一个已签署的流水
+ * @param amount
+ */
+function createSignedTx (amount = 10) {
+  const txObject = new Transaction(signingKey.getPublic('hex'), 'wallet2', amount)
+  txObject.timestamp = 1
+  txObject.signTransaction(signingKey)
+  return txObject
 }
 
-function createBCWithMined() {
-  const blockchain = new Blockchain();
-  blockchain.minePendingTransactions(signingKey.getPublic('hex'));
-
-  return blockchain;
+function createBCWithMined () {
+  const blockchain = new Blockchain()
+  blockchain.minePendingTransactions(signingKey.getPublic('hex'))
+  return blockchain
 }
 
-function createBlockchainWithTx() {
-  const blockchain = new Blockchain();
-  blockchain.minePendingTransactions(signingKey.getPublic('hex'));
-
-  const validTx = new Transaction(signingKey.getPublic('hex'), 'b2', 10);
-  validTx.signTransaction(signingKey);
-
-  blockchain.addTransaction(validTx);
-  blockchain.addTransaction(validTx);
-  blockchain.minePendingTransactions(1);
-
-  return blockchain;
+function createBlockchainWithTx () {
+  const blockchain = new Blockchain()
+  blockchain.minePendingTransactions(signingKey.getPublic('hex'))
+  const validTx = new Transaction(signingKey.getPublic('hex'), 'b2', 10)
+  validTx.signTransaction(signingKey)
+  blockchain.addTransaction(validTx)
+  blockchain.addTransaction(validTx)
+  blockchain.minePendingTransactions(1)
+  return blockchain
 }
 
 export {
