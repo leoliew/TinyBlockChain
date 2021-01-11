@@ -1,4 +1,5 @@
-const { Transaction, Blockchain } = require('../src/blockchain');
+const { Transaction } = require('../src/Transaction')
+const { Blockchain } = require('../src/BlockChain')
 const EC = require('elliptic').ec;
 const ec = new EC('secp256k1');
 const signingKey = ec.keyFromPrivate('3d6f54430830d388052865b95c10b4aeb1bbe33c01334cf2cfa8b520062a0ce3');
@@ -32,7 +33,9 @@ function createBlockchainWithTx() {
   return blockchain;
 }
 
-module.exports.signingKey = signingKey;
-module.exports.createSignedTx = createSignedTx;
-module.exports.createBlockchainWithTx = createBlockchainWithTx;
-module.exports.createBCWithMined = createBCWithMined;
+export {
+  signingKey,
+  createSignedTx,
+  createBlockchainWithTx,
+  createBCWithMined
+}
