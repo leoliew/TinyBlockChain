@@ -1,9 +1,9 @@
 import { Block } from './Block'
 import { Transaction } from './Transaction'
 
-export class BlockChain {
+export class Blockchain {
   public chain: Array<Block>
-  private pendingTransactions: Transaction[]
+  public pendingTransactions: Transaction[]
   private readonly difficulty = 1
   private readonly miningReward = 100
 

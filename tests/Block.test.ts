@@ -26,48 +26,37 @@ describe('Block class', function () {
   })
 
   describe('计算区块hash值', function () {
-    it('should correct calculate the SHA256', function () {
+    it('正确计算区块SHA256的值', function () {
       blockObj.timestamp = 1
       blockObj.mineBlock(1)
-
-      // assert.strict.equal(
-      //   blockObj.hash,
-      //   '07d2992ddfcb8d538075fea2a6a33e7fb546c18038ae1a8c0214067ed66dc393'
-      // )
+      expect(blockObj.hash).toBe('07d2992ddfcb8d538075fea2a6a33e7fb546c18038ae1a8c0214067ed66dc393')
     })
 
-    it('should change when we tamper with the tx', function () {
+    it('篡改区块数据会导致hash值不一致', function () {
       const origHash = blockObj.calculateHash()
       blockObj.timestamp = 100
-
-      // assert.strict.notEqual(
-      //   blockObj.calculateHash(),
-      //   origHash
-      // )
+      expect(blockObj.calculateHash()).not.toBe(origHash)
     })
   })
 
-  describe('has valid transactions', function () {
-    it('should return true with all valid tx', function () {
+  describe('区块内的交易数据有效', function () {
+    it('区块内的交易有效，返回true', function () {
       blockObj.transactions = [
         createSignedTx(),
         createSignedTx(),
         createSignedTx()
       ]
-
-      // assert(blockObj.hasValidTransactions())
+      expect(blockObj.hasValidTransactions()).toBe(true)
     })
 
-    it('should return false when a single tx is bad', function () {
+    it('修改交易，有效性校验为false', function () {
       const badTx = createSignedTx()
       badTx.amount = 1337
-
       blockObj.transactions = [
         createSignedTx(),
         badTx
       ]
-
-      // assert(!blockObj.hasValidTransactions())
+      expect(blockObj.hasValidTransactions()).toBe(false)
     })
   })
 })

@@ -1,13 +1,13 @@
 // import { Block, BlockChain } from "./main"
 import { Transaction } from "./Transaction"
-import { BlockChain } from "./BlockChain"
+import { Blockchain } from "./Blockchain"
 import { ec as EC } from 'elliptic'
 
 const ec = new EC('secp256k1')
 
 // test('block chain', () => {
 // Create new instance of Blockchain class
-let blockChain = new BlockChain()
+let blockChain = new Blockchain()
 
 
 // Create key object

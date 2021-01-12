@@ -24,7 +24,7 @@ class Block {
   +hasValidTransactions
 }
 
-class BlockChain {
+class Blockchain {
 .. Field ..
   +chain : Array<Block>
   -pendingTransactions: Transaction[]
@@ -41,6 +41,6 @@ class BlockChain {
 }
 
 Block "0..1" *-- "*" Transaction
-BlockChain "1" *-- "*" Transaction
-BlockChain "1" *-- "*" Block
+Blockchain "1" *-- "*" Transaction
+Blockchain "1" *-- "*" Block
 @enduml
