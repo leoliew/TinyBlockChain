@@ -2,7 +2,7 @@ import { Bcrypt } from './util/Bcrypt'
 import { Transaction } from './Transaction'
 
 export class Block {
-  private timestamp: number
+  public timestamp: number
   public transactions: Array<Transaction>
   public previousHash: string
   public hash: string

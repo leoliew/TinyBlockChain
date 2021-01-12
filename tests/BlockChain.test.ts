@@ -79,49 +79,47 @@ describe('Blockchain class', function () {
     })
   })
 
-  describe('isChainValid', function () {
-    it('should return true if no tampering', function () {
+  describe('区块链校验', function () {
+    it('在没有被篡改的情况下校验正确', function () {
       const blockchain = createBlockchainWithTx()
-      // assert(blockchain.isChainValid())
+      expect(blockchain.isChainValid()).toBe(true)
     })
 
-    it('should fail when genesis block has been tampered with', function () {
+    it('在创世区块被篡改的情况下校验出错误', function () {
       blockchain.chain[0].timestamp = 39708
-      // assert(!blockchain.isChainValid())
+      expect(blockchain.isChainValid()).toBe(false)
     })
 
-    it('should fail when a tx is invalid', function () {
+    it('在区块内交易被篡改的情况下校验出错误', function () {
       const blockchain = createBlockchainWithTx()
       blockchain.chain[2].transactions[1].amount = 897397
-      // assert(!blockchain.isChainValid())
+      expect(blockchain.isChainValid()).toBe(false)
     })
 
-    it('should fail when a block has been changed', function () {
+    it('在区块被篡改的情况下校验出错误', function () {
       const blockchain = createBlockchainWithTx()
-      // blockchain.chain[1].timestamp = 897397
-      // assert(!blockchain.isChainValid())
+      blockchain.chain[1].timestamp = 897397
+      expect(blockchain.isChainValid()).toBe(false)
     })
   })
 
-  describe('getAllTransactionsForWallet', function () {
-    it('should get all Transactions for a Wallet', function () {
+  describe('获取地址（钱包）所有的交易流水', function () {
+    it('可以获取钱包所有的交易', function () {
       const blockchain = createBCWithMined()
       const validTx = createSignedTx()
       blockchain.addTransaction(validTx)
       blockchain.addTransaction(validTx)
-
       blockchain.minePendingTransactions('b2')
       blockchain.addTransaction(validTx)
       blockchain.addTransaction(validTx)
       blockchain.minePendingTransactions('b2')
-
-      // assert.strict.equal(blockchain.getAllTransactionsForWallet('b2').length, 2)
-      // assert.strict.equal(blockchain.getAllTransactionsForWallet(signingKey.getPublic('hex')).length, 5)
-      // for (const trans of blockchain.getAllTransactionsForWallet('b2')) {
-      //   assert.strict.equal(trans.amount, 100)
-      //   assert.strict.equal(trans.fromAddress, null)
-      //   assert.strict.equal(trans.toAddress, 'b2')
-      // }
+      expect(blockchain.getAllTransactionsForWallet('b2').length).toBe(2)
+      expect(blockchain.getAllTransactionsForWallet(signingKey.getPublic('hex')).length).toBe(5)
+      for (const trans of blockchain.getAllTransactionsForWallet('b2')) {
+        expect(trans.amount).toBe(100)
+        expect(trans.fromAddress).toBe(null)
+        expect(trans.toAddress).toBe('b2')
+      }
     })
   })
 })
