@@ -8,5 +8,5 @@ notifications:
 node_js:
   - "10.15.3"
 before_script:
-  - npm install
+  - npm prune
 script: 'npm test'
