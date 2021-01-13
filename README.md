@@ -56,7 +56,7 @@ blockChain2.addTransaction(tx2)
 ```
 
 ## TODO
-* 难度系数递增
+* 难度系数动态调节/越到后面越难挖
 * p2p网络传输
 * 区块限定交易
 * ...
